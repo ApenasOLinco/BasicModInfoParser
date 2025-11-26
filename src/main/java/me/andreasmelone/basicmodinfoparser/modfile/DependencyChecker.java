@@ -29,6 +29,8 @@ import me.andreasmelone.basicmodinfoparser.platform.dependency.Dependency;
 import me.andreasmelone.basicmodinfoparser.platform.dependency.PresenceStatus;
 import me.andreasmelone.basicmodinfoparser.platform.dependency.fabric.LooseSemanticVersion;
 import me.andreasmelone.basicmodinfoparser.platform.dependency.forge.MavenVersion;
+import me.andreasmelone.basicmodinfoparser.platform.dependency.version.LooseSemanticVersionFactory;
+import me.andreasmelone.basicmodinfoparser.platform.dependency.version.MavenVersionFactory;
 import me.andreasmelone.basicmodinfoparser.platform.modinfo.StandardBasicModInfo;
 import me.andreasmelone.basicmodinfoparser.util.Pair;
 
@@ -56,7 +58,7 @@ public class DependencyChecker {
             javaInfo = new StandardBasicModInfo(
                     "java",
                     "Java",
-                    new LooseSemanticVersion().parse(javaVersion).orElse(null),
+                    new LooseSemanticVersionFactory().parseVersion(javaVersion).orElse(null),
                     "Java",
                     new ArrayList<>(),
                     null,
@@ -67,7 +69,10 @@ public class DependencyChecker {
         BasicModInfo gameInfo = new StandardBasicModInfo(
                 "minecraft",
                 "Minecraft",
-                (isFabricBased ? new LooseSemanticVersion().parse(gameVersion) : new MavenVersion().parse(gameVersion)).orElse(null),
+                (isFabricBased
+                        ? new LooseSemanticVersionFactory().parseVersion(gameVersion)
+                        : new MavenVersionFactory().parseVersion(gameVersion))
+                        .orElse(null),
                 "Minecraft",
                 new ArrayList<>(),
                 null,
