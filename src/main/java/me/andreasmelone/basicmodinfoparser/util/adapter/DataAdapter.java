@@ -26,7 +26,6 @@ package me.andreasmelone.basicmodinfoparser.util.adapter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * An abstract class for standardizing access to data from different sources,
@@ -40,7 +39,7 @@ public abstract class DataAdapter<T, A> {
     /**
      * The underlying data source object.
      */
-    protected T backingObject;
+    protected final T backingObject;
 
     /**
      * Constructs a new {@code DataAdapter} with the given backing object.
