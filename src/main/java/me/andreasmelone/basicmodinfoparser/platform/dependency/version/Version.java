@@ -26,15 +26,11 @@ package me.andreasmelone.basicmodinfoparser.platform.dependency.version;
 import java.util.Optional;
 
 public abstract class Version implements Comparable<Version> {
-    protected String stringRepresentation;
-
-    public Version() { /* Empty Constructor */ }
+    protected final String stringRepresentation;
 
     protected Version(String stringRepresentation) {
         this.stringRepresentation = stringRepresentation;
     }
-
-    public abstract Optional<Version> parse(String versionString);
 
     public Optional<Version> optional() {
         return Optional.of(this);
