@@ -46,7 +46,7 @@ public class FabricModInfo extends StandardBasicModInfo implements ProvidesList<
             @Nullable List<Dependency> dependencies,
             @Nullable String iconPath,
             @NotNull Platform platform,
-            @NotNull List<String> authors,
+            @Nullable List<String> authors,
             @Nullable List<ProvidedMod> provides
     ) {
         super(id, name, version, description, dependencies, iconPath, platform, authors);
