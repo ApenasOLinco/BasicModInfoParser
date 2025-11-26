@@ -96,7 +96,7 @@ public class JsonAdapter extends DataAdapter<JsonObject, JsonArray> {
         JsonElement element = backingObject.get(key);
         List<String> result = new ArrayList<>();
 
-        if (!element.isJsonArray() && !element.isJsonObject()) return Collections.emptyList();
+        if (element.isJsonNull() || !element.isJsonArray() && !element.isJsonObject()) return Collections.emptyList();
 
         // Since both on Forge Legacy (https://docs.minecraftforge.net/en/1.13.x/gettingstarted/structuring/)
         // and Fabric (https://wiki.fabricmc.net/documentation:fabric_mod_json#metadata) the
