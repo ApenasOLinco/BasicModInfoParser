@@ -23,7 +23,7 @@
  */
 package me.andreasmelone.basicmodinfoparser.platform.dependency.forge;
 
-import me.andreasmelone.basicmodinfoparser.platform.dependency.version.Version;
+import me.andreasmelone.basicmodinfoparser.platform.dependency.version.MavenVersionFactory;
 import me.andreasmelone.basicmodinfoparser.platform.dependency.version.VersionRange;
 
 import java.util.*;
@@ -96,18 +96,18 @@ public class MavenVersionRange implements VersionRange<MavenVersion> {
 
                 MavenVersion lower = lowerStr.isEmpty()
                         ? null
-                        : (MavenVersion) new MavenVersion().parse(lowerStr).orElse(null);
+                        : new MavenVersionFactory().parseVersion(lowerStr).orElse(null);
                 MavenVersion upper = upperStr.isEmpty()
                         ? null
-                        : (MavenVersion) new MavenVersion().parse(upperStr).orElse(null);
+                        : new MavenVersionFactory().parseVersion(upperStr).orElse(null);
 
                 ranges.add(new Range(lower, lowerExclusive, upper, upperExclusive));
             } else {
-                Optional<Version> exact = new MavenVersion().parse(part.trim());
+                Optional<MavenVersion> exact = new MavenVersionFactory().parseVersion(part.trim());
                 exact.ifPresent(v -> ranges.add(new Range(
-                        (MavenVersion) v,
+                        v,
                         false,
-                        (MavenVersion) v,
+                        v,
                         false
                 )));
             }
