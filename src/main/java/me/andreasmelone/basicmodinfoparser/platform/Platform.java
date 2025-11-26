@@ -36,7 +36,8 @@ import me.andreasmelone.basicmodinfoparser.platform.dependency.parser.FabricDepe
 import me.andreasmelone.basicmodinfoparser.platform.dependency.parser.ForgeDependencyParser;
 import me.andreasmelone.basicmodinfoparser.platform.dependency.parser.LegacyForgeDependencyParser;
 import me.andreasmelone.basicmodinfoparser.platform.dependency.parser.QuiltDependencyParser;
-import me.andreasmelone.basicmodinfoparser.platform.dependency.version.Version;
+import me.andreasmelone.basicmodinfoparser.platform.dependency.version.LooseSemanticVersionFactory;
+import me.andreasmelone.basicmodinfoparser.platform.dependency.version.MavenVersionFactory;
 import me.andreasmelone.basicmodinfoparser.platform.modinfo.FabricModInfo;
 import me.andreasmelone.basicmodinfoparser.platform.modinfo.StandardBasicModInfo;
 import me.andreasmelone.basicmodinfoparser.platform.modinfo.model.ModInfoKeys;
@@ -98,7 +99,7 @@ public enum Platform {
                         new JsonAdapter(modObject),
                         this,
                         new LegacyForgeDependencyParser(),
-                        new MavenVersion()
+                        new MavenVersionFactory()
                 ));
             }
 
@@ -132,7 +133,7 @@ public enum Platform {
                         new TomlAdapter(modInfo),
                         this,
                         new ForgeDependencyParser(),
-                        new MavenVersion()
+                        new MavenVersionFactory()
                 );
 
                 modInfos.add(info);
@@ -143,7 +144,7 @@ public enum Platform {
 
         @Override
         protected BasicModInfo createNullableLoaderInfo(String loaderVersion) {
-            Optional<Version> version = new MavenVersion().parse(loaderVersion);
+            Optional<MavenVersion> version = new MavenVersionFactory().parseVersion(loaderVersion);
             return new StandardBasicModInfo(
                     "forge",
                     "Forge",
@@ -167,7 +168,7 @@ public enum Platform {
                     new TomlAdapter(modsTable),
                     this,
                     new ForgeDependencyParser(),
-                    new MavenVersion()
+                    new MavenVersionFactory()
             );
 
             return new BasicModInfo[]{info};
@@ -175,7 +176,7 @@ public enum Platform {
 
         @Override
         protected @NotNull BasicModInfo createNullableLoaderInfo(String loaderVersion) {
-            Optional<Version> version = new MavenVersion().parse(loaderVersion);
+            Optional<MavenVersion> version = new MavenVersionFactory().parseVersion(loaderVersion);
             return new StandardBasicModInfo(
                     "neoforge",
                     "NeoForge",
@@ -235,7 +236,7 @@ public enum Platform {
                         new JsonAdapter(modObject),
                         this,
                         new FabricDependencyParser(),
-                        new LooseSemanticVersion()
+                        new LooseSemanticVersionFactory()
                 );
 
                 List<ProvidedMod> providedMods = new ArrayList<>();
@@ -268,7 +269,7 @@ public enum Platform {
 
         @Override
         protected @NotNull BasicModInfo createNullableLoaderInfo(String loaderVersion) {
-            Optional<Version> version = new LooseSemanticVersion().parse(loaderVersion);
+            Optional<LooseSemanticVersion> version = new LooseSemanticVersionFactory().parseVersion(loaderVersion);
             return new StandardBasicModInfo(
                     "fabricloader",
                     "Fabric Loader",
@@ -340,14 +341,14 @@ public enum Platform {
                             quiltLoader,
                             this,
                             new QuiltDependencyParser(),
-                            new LooseSemanticVersion()
+                            new LooseSemanticVersionFactory()
                     )
             };
         }
 
         @Override
         protected @NotNull BasicModInfo createNullableLoaderInfo(String loaderVersion) {
-            Optional<Version> version = new LooseSemanticVersion().parse(loaderVersion);
+            Optional<LooseSemanticVersion> version = new LooseSemanticVersionFactory().parseVersion(loaderVersion);
             return new StandardBasicModInfo(
                     "quilt_loader",
                     "Quilt Loader",
