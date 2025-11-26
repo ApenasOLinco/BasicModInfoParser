@@ -1,6 +1,7 @@
 package me.andreasmelone.basicmodinfoparser.test;
 
 import me.andreasmelone.basicmodinfoparser.platform.dependency.fabric.LooseSemanticVersion;
+import me.andreasmelone.basicmodinfoparser.platform.dependency.version.LooseSemanticVersionFactory;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ public class LooseSemanticVersionParserTests {
     class Basic {
         @Test
         void parsesSimpleVersion() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.0.0");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.0.0");
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 0, 0 }, ver.get().getVersionParts());
             assertNull(ver.get().getPreReleaseSuffix());
@@ -23,7 +24,7 @@ public class LooseSemanticVersionParserTests {
 
         @Test
         void parsesWithMetadata() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.0.0+metadata");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.0.0+metadata");
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 0, 0 }, ver.get().getVersionParts());
             assertNull(ver.get().getPreReleaseSuffix());
@@ -36,7 +37,7 @@ public class LooseSemanticVersionParserTests {
     class PreRelease {
         @Test
         void parsesWithoutNumber() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.0.0-alpha");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.0.0-alpha");
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 0, 0 }, ver.get().getVersionParts());
             assertEquals("alpha", ver.get().getPreReleaseSuffix());
@@ -46,7 +47,7 @@ public class LooseSemanticVersionParserTests {
 
         @Test
         void parsesWithNumber() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.0.0-alpha.1");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.0.0-alpha.1");
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 0, 0 }, ver.get().getVersionParts());
             assertEquals("alpha", ver.get().getPreReleaseSuffix());
@@ -56,7 +57,7 @@ public class LooseSemanticVersionParserTests {
 
         @Test
         void parsesWithEmptyPreRelease() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.2-");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.2-");
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 2 }, ver.get().getVersionParts());
             assertEquals("", ver.get().getPreReleaseSuffix());
@@ -69,7 +70,7 @@ public class LooseSemanticVersionParserTests {
     class Wildcard {
         @Test
         void parsesLowercaseXWildcard() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.2.x", true);
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.2.x", true);
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 2, 0 }, ver.get().getVersionParts());
             assertNull(ver.get().getPreReleaseSuffix());
@@ -80,7 +81,7 @@ public class LooseSemanticVersionParserTests {
 
         @Test
         void parsesUppercaseXWildcard() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.2.X", true);
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.2.X", true);
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 2, 0 }, ver.get().getVersionParts());
             assertNull(ver.get().getPreReleaseSuffix());
@@ -91,7 +92,7 @@ public class LooseSemanticVersionParserTests {
 
         @Test
         void parsesAsterixWildcard() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.2.*", true);
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.2.*", true);
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 2, 0 }, ver.get().getVersionParts());
             assertNull(ver.get().getPreReleaseSuffix());
@@ -102,7 +103,7 @@ public class LooseSemanticVersionParserTests {
 
         @Test
         void parsesWithMiddleWildcard() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.x.4", true);
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.x.4", true);
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 0, 4 }, ver.get().getVersionParts());
             assertNull(ver.get().getPreReleaseSuffix());
@@ -116,7 +117,7 @@ public class LooseSemanticVersionParserTests {
     class General {
         @Test
         void parsesOrdinarySemVer() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.0.0-alpha.1+metadata");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.0.0-alpha.1+metadata");
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 0, 0 }, ver.get().getVersionParts());
             assertEquals("alpha", ver.get().getPreReleaseSuffix());
@@ -126,7 +127,7 @@ public class LooseSemanticVersionParserTests {
 
         @Test
         void parsesWithLessComponents() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.0-alpha.1+metadata");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.0-alpha.1+metadata");
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 0 }, ver.get().getVersionParts());
             assertEquals("alpha", ver.get().getPreReleaseSuffix());
@@ -136,7 +137,7 @@ public class LooseSemanticVersionParserTests {
 
         @Test
         void parsesWithMoreComponents() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.0.0.0-alpha.1+metadata");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.0.0.0-alpha.1+metadata");
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 1, 0, 0, 0 }, ver.get().getVersionParts());
             assertEquals("alpha", ver.get().getPreReleaseSuffix());
@@ -146,7 +147,7 @@ public class LooseSemanticVersionParserTests {
 
         @Test
         void parsesRealVersion() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("11.0.0-alpha.3+0.102.0-1.21");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("11.0.0-alpha.3+0.102.0-1.21");
             assertTrue(ver.isPresent());
             assertArrayEquals(new int[] { 11, 0, 0 }, ver.get().getVersionParts());
             assertEquals("alpha", ver.get().getPreReleaseSuffix());
@@ -159,19 +160,19 @@ public class LooseSemanticVersionParserTests {
     class Invalid {
         @Test
         void rejectsGarbage() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("potato");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("potato");
             assertFalse(ver.isPresent());
         }
 
         @Test
         void rejectsEmptyString() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("");
             assertFalse(ver.isPresent());
         }
 
         @Test
         void rejectsNonAlphanumeric() {
-            Optional<LooseSemanticVersion> ver = LooseSemanticVersion.parse("1.0.0-абрикос.2+不甜瓜");
+            Optional<LooseSemanticVersion> ver = new LooseSemanticVersionFactory().parseVersion("1.0.0-абрикос.2+不甜瓜");
             assertFalse(ver.isPresent());
         }
     }
