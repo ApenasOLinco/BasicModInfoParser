@@ -163,15 +163,28 @@ public enum Platform {
     NEOFORGE(forgeKeys(), "META-INF/neoforge.mods.toml") {
         @Override
         protected @NotNull BasicModInfo[] parseFileData(String fileData) {
-            final TomlTable modsTable = Toml.parse(fileData).getTable("mods");
-            final BasicModInfo info = ParserUtils.createModInfoFrom(
-                    new TomlAdapter(modsTable),
-                    this,
-                    new ForgeDependencyParser(),
-                    new MavenVersionFactory()
-            );
+            final TomlParseResult parsedFileData = Toml.parse(fileData);
 
-            return new BasicModInfo[]{info};
+            final TomlArray mods = parsedFileData.getArray("mods");
+            if (mods == null) return StandardBasicModInfo.emptyArray();
+
+            final BasicModInfo[] result = new BasicModInfo[mods.size()];
+
+            for (int i = 0; i < mods.size(); i++) {
+                final TomlTable currentTable = mods.getTable(i);
+                if (currentTable.isEmpty()) continue;
+
+                final BasicModInfo info = ParserUtils.createModInfoFrom(
+                        new TomlAdapter(currentTable),
+                        this,
+                        new ForgeDependencyParser(),
+                        new MavenVersionFactory()
+                );
+
+                result[i] = info;
+            }
+
+            return result;
         }
 
         @Override
