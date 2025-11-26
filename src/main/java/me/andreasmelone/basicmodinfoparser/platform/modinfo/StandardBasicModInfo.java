@@ -130,7 +130,7 @@ public class StandardBasicModInfo implements BasicModInfo {
         return platform;
     }
 
-    public List<String> getAuthors() {
+    public @Nullable List<String> getAuthors() {
         return authors;
     }
 
