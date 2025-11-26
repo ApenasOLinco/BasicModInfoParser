@@ -35,19 +35,22 @@ import java.util.regex.Pattern;
  * Represents a looser version of the SemVer 2.0, which is accepted by fabric
  */
 public class LooseSemanticVersion extends Version {
-    private static final Pattern ALPHANUMERIC = Pattern.compile("[a-zA-Z0-9_\\-.+*]+");
-    private static final Pattern REGEX = Pattern.compile("^([0-9xX*]+(?:\\.[0-9xX*]+)*)(-.*?)?(\\+.+)?$", Pattern.MULTILINE);
+    private final int[] versionParts;
+    private final List<Integer> wildcardPositions;
+    private final String preReleaseSuffix;
+    private final Integer preReleaseNumber;
+    private final String buildMetadata;
+    private final boolean usesWildcards;
 
-    private int[] versionParts;
-    private List<Integer> wildcardPositions;
-    private String preReleaseSuffix;
-    private Integer preReleaseNumber;
-    private String buildMetadata;
-    private boolean usesWildcards;
-
-    public LooseSemanticVersion() { /* Empty constructor */ }
-
-    private LooseSemanticVersion(String stringRepresentation, int[] versionParts, List<Integer> wildcardPositions, String preReleaseSuffix, Integer preReleaseNumber, String buildMetadata, boolean usesWildcards) {
+    public LooseSemanticVersion(
+            String stringRepresentation,
+            int[] versionParts,
+            List<Integer> wildcardPositions,
+            String preReleaseSuffix,
+            Integer preReleaseNumber,
+            String buildMetadata,
+            boolean usesWildcards
+    ) {
         super(stringRepresentation);
         this.versionParts = versionParts;
         this.wildcardPositions = wildcardPositions;
@@ -202,69 +205,6 @@ public class LooseSemanticVersion extends Version {
     @Override
     public int hashCode() {
         return Objects.hash(Arrays.hashCode(versionParts), wildcardPositions, preReleaseSuffix, preReleaseNumber, buildMetadata, usesWildcards);
-    }
-
-    @Override
-    public Optional<Version> parse(String versionString) {
-        return parse(versionString, false);
-    }
-
-    public Optional<Version> parse(String ver, boolean wildcards) {
-        if (ver == null || ver.isEmpty() || !ALPHANUMERIC.matcher(ver).matches()) return Optional.empty();
-
-        Matcher matcher = REGEX.matcher(ver);
-        if (!matcher.matches()) return Optional.empty();
-        String numbers = matcher.group(1);
-        String prerelease = matcher.group(2);
-        String metadata = matcher.group(3);
-
-        if (prerelease != null && !prerelease.isEmpty()) {
-            prerelease = prerelease.substring(1);
-        }
-
-        if (metadata != null && !metadata.isEmpty()) {
-            metadata = metadata.substring(1);
-        }
-
-        String[] splitNumbers = numbers.split("\\.");
-        int[] versionInts = new int[splitNumbers.length];
-        List<Integer> wildcardPositions = new ArrayList<>();
-
-        for (int i = 0; i < splitNumbers.length; i++) {
-            String num = splitNumbers[i];
-            if (num.equalsIgnoreCase("x") || num.equals("*")) {
-                if (!wildcards) return Optional.empty();
-                versionInts[i] = 0;
-                wildcardPositions.add(i);
-                continue;
-            }
-            try {
-                versionInts[i] = Integer.parseUnsignedInt(num);
-            } catch (NumberFormatException ignored) {
-                return Optional.empty();
-            }
-        }
-
-        Integer prereleaseNumber = null;
-        if (prerelease != null) {
-            String[] prereleaseSplit = prerelease.split("\\.", 2);
-            if (prereleaseSplit.length > 1) {
-                try {
-                    prereleaseNumber = Integer.parseInt(prereleaseSplit[1]);
-                    prerelease = prereleaseSplit[0];
-                } catch (NumberFormatException ignored) {
-                }
-            }
-        }
-
-        this.wildcardPositions = wildcardPositions;
-        this.preReleaseSuffix = prerelease;
-        this.preReleaseNumber = prereleaseNumber;
-        this.buildMetadata = metadata;
-        this.versionParts = versionInts;
-        this.usesWildcards = wildcards;
-
-        return Optional.of(this);
     }
 
     @Override
