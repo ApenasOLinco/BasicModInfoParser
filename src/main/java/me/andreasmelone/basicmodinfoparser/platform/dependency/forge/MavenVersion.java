@@ -27,9 +27,8 @@ import me.andreasmelone.basicmodinfoparser.platform.dependency.version.Version;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * This class partially implements mavens version format: <a href="https://maven.apache.org/ref/3.5.2/maven-artifact/apidocs/org/apache/maven/artifact/versioning/ComparableVersion.html">ComparableVersion</a>
