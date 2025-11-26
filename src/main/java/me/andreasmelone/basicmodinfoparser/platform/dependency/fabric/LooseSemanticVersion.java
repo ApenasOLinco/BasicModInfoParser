@@ -23,13 +23,13 @@
  */
 package me.andreasmelone.basicmodinfoparser.platform.dependency.fabric;
 
-import me.andreasmelone.basicmodinfoparser.platform.dependency.forge.MavenVersion;
 import me.andreasmelone.basicmodinfoparser.platform.dependency.version.Version;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a looser version of the SemVer 2.0, which is accepted by fabric
