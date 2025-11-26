@@ -37,59 +37,14 @@ import java.util.regex.Pattern;
  * The format is quite complex, so this is not a fully compliant implementation.
  */
 public class MavenVersion extends Version {
-    private static final Pattern ALPHANUMERIC = Pattern.compile("[a-zA-Z0-9_\\-.]+");
-    private static final Pattern STRING_PARSER = Pattern.compile("^(\\d*)?(\\D+)(\\d*)?$");
-    private VersionSegment[] versionSegments;
+    private final VersionSegment[] versionSegments;
 
-    @Override
-    public Optional<Version> parse(String versionString) {
-        if (versionString == null || versionString.isEmpty() || !ALPHANUMERIC.matcher(versionString).matches()) return Optional.empty();
-
-        List<VersionSegment> segments = new ArrayList<>();
-
-        String noHyphens = versionString.replace("-", ".");
-        String[] splitByDot = noHyphens.split("\\.");
-        for (String segment : splitByDot) {
-            Matcher matcher = STRING_PARSER.matcher(segment);
-            if (!matcher.matches()) {
-                try {
-                    segments.add(new VersionSegment.NumberVersionSegment(Integer.parseUnsignedInt(segment)));
-                } catch (NumberFormatException ignored) {
-                    //
-                }
-
-                continue;
-            }
-
-            String firstNumber = matcher.group(1);
-            String string = matcher.group(2);
-            String secondNumber = matcher.group(3);
-
-            if (firstNumber != null && !firstNumber.isEmpty()) {
-                try {
-                    segments.add(new VersionSegment.NumberVersionSegment(Integer.parseUnsignedInt(firstNumber)));
-                } catch (NumberFormatException ignored) {
-                }
-            }
-            if (string != null && !string.isEmpty()) {
-                VersionSegment.QualifierVersionSegment.Qualifier qualifier = VersionSegment.QualifierVersionSegment.Qualifier.getByName(string);
-                if (qualifier == null) {
-                    segments.add(new VersionSegment.StringVersionSegment(string));
-                } else {
-                    segments.add(new VersionSegment.QualifierVersionSegment(qualifier));
-                }
-            }
-            if (secondNumber != null && !secondNumber.isEmpty()) {
-                try {
-                    segments.add(new VersionSegment.NumberVersionSegment(Integer.parseUnsignedInt(secondNumber)));
-                } catch (NumberFormatException ignored) {
-                }
-            }
-        }
-
-        this.stringRepresentation = versionString;
-        this.versionSegments = segments.toArray(new VersionSegment[0]);
-        return Optional.of(this);
+    public MavenVersion(
+            String versionString,
+            VersionSegment[] versionSegments
+    ) {
+        super(versionString);
+        this.versionSegments = versionSegments;
     }
 
     @Override
@@ -120,7 +75,6 @@ public class MavenVersion extends Version {
 
         return 0;
     }
-
 
     @Override
     public String toString() {
