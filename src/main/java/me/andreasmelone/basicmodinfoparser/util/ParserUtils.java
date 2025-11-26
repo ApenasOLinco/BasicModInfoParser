@@ -29,6 +29,7 @@ import me.andreasmelone.basicmodinfoparser.platform.Platform;
 import me.andreasmelone.basicmodinfoparser.platform.dependency.Dependency;
 import me.andreasmelone.basicmodinfoparser.platform.dependency.parser.IDependencyParser;
 import me.andreasmelone.basicmodinfoparser.platform.dependency.version.Version;
+import me.andreasmelone.basicmodinfoparser.platform.dependency.version.VersionFactory;
 import me.andreasmelone.basicmodinfoparser.platform.modinfo.StandardBasicModInfo;
 import me.andreasmelone.basicmodinfoparser.platform.modinfo.model.ModInfoKeys;
 import me.andreasmelone.basicmodinfoparser.util.adapter.DataAdapter;
@@ -40,7 +41,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 public class ParserUtils {
     public static final Gson GSON = new Gson();
@@ -70,9 +70,9 @@ public class ParserUtils {
      *
      * @param modAdapter         The {@link DataAdapter} containing the mod information.
      * @param platform           The {@link Platform} this mod info belongs to.
-     * @param dependenciesParser A {@link BiFunction} that takes an array of dependency keys and the
+     * @param dependenciesParser A {@link IDependencyParser} that takes an array of dependency keys and the
+     * @param versionFactory     A {@link VersionFactory} to parse the mod's version string into a {@link Version} object.
      *                           {@link DataAdapter} to parse dependencies from, returning a list of {@link Dependency}.
-     * @param versionParser      A function to parse the version string.
      * @return A {@link BasicModInfo} object containing the mod information and its dependencies.
      */
     public static <T extends DataAdapter<?, ?>, D extends Dependency>
@@ -80,7 +80,7 @@ public class ParserUtils {
             @NotNull T modAdapter,
             @NotNull Platform platform,
             @NotNull IDependencyParser<T, D> dependenciesParser,
-            @NotNull Version versionParser
+            @NotNull VersionFactory<? extends Version> versionFactory
     ) {
         // Get miscellaneous information
         final ModInfoKeys modInfoKeys = platform.getModInfoKeys();
@@ -91,7 +91,7 @@ public class ParserUtils {
         String logo = modAdapter.getString(modInfoKeys.logoFileKey).orElse(null);
 
         // Parse Version
-        Optional<Version> parsedVersion = versionParser.parse(version);
+        Optional<? extends Version> parsedVersion = versionFactory.parseVersion(version);
 
         // Get authors
         List<String> authorsList = modAdapter.getListOrString(modInfoKeys.authorsKey);
