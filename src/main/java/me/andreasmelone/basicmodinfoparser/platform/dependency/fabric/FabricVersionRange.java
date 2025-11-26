@@ -23,7 +23,7 @@
  */
 package me.andreasmelone.basicmodinfoparser.platform.dependency.fabric;
 
-import me.andreasmelone.basicmodinfoparser.platform.dependency.version.Version;
+import me.andreasmelone.basicmodinfoparser.platform.dependency.version.LooseSemanticVersionFactory;
 import me.andreasmelone.basicmodinfoparser.platform.dependency.version.VersionRange;
 
 import java.util.*;
@@ -107,11 +107,11 @@ public class FabricVersionRange implements VersionRange<LooseSemanticVersion> {
 
                     if (operators == null || versionString == null || versionString.isEmpty()) continue;
                 }
-                Optional<Version> parsedVersion = new LooseSemanticVersion().parse(versionString, true);
+                Optional<LooseSemanticVersion> parsedVersion = new LooseSemanticVersionFactory().parseVersion(versionString, true);
                 if (!parsedVersion.isPresent()) continue;
                 if (operators.isEmpty()) operators.add(Operator.EQUALS);
 
-                versionConditions.add(new VersionCondition(operators, (LooseSemanticVersion) parsedVersion.get()));
+                versionConditions.add(new VersionCondition(operators, parsedVersion.get()));
             }
 
             allConditions.add(versionConditions);
