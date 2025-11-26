@@ -123,7 +123,7 @@ public enum JarInJarPlatform {
 
     private final String[] metadataFiles;
 
-    private JarInJarPlatform(String... metadataFiles) {
+    JarInJarPlatform(String... metadataFiles) {
         this.metadataFiles = metadataFiles;
     }
 
