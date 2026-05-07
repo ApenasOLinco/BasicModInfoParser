@@ -11,7 +11,7 @@ repositories {
 }
 
 java {
-    targetCompatibility = sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = sourceCompatibility = JavaVersion.VERSION_17
 
     withSourcesJar()
     withJavadocJar()
